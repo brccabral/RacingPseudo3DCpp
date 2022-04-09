@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
 using namespace std;
 using namespace sf;
@@ -61,8 +62,14 @@ int main()
         Line line;
         line.z = i * segL;
 
+        // curve segment
         if (i > 300 && i < 700)
             line.curve = 0.5;
+
+        // after 750 it is uphill and downhill in sin() form
+        if (i > 750)
+            line.y = sin(i / 30.0) * 1500;
+
         lines.push_back(line);
     }
     int N = lines.size();
@@ -91,15 +98,23 @@ int main()
 
         float x = 0, dx = 0; // curve offset on x axis
 
+        int camH = 1500 + lines[startPos].y;
+        int maxy = screen_height;
+
         app.clear();
 
         // draw road
         for (int n = startPos; n < startPos + 300; n++)
         {
             Line &current = lines[n % N];
-            current.project(playerX - x, 1500, pos);
+            current.project(playerX - x, camH, pos);
             x += dx;
             dx += current.curve;
+
+            //don't draw "above ground"
+            if (current.Y >= maxy)
+                continue;
+            maxy = current.Y;
 
             Line prev = lines[(n - 1) % N]; // previous line
 
