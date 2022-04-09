@@ -10,6 +10,14 @@ int roadW = 2000;  // road width (left to right)
 int segL = 200;    // segment length (top to bottom)
 float camD = 0.84; // camera depth
 
+// scene colors
+Color dark_grass = Color(0, 154, 0);
+Color light_grass = Color(16, 200, 16);
+Color white_rumble = Color(255, 255, 255);
+Color black_rumble = Color(0, 0, 0);
+Color dark_road = Color(105, 105, 105);
+Color light_road = Color(107, 107, 107);
+
 struct Line
 {
     float x, y, z; // game position (3D space)
@@ -67,7 +75,24 @@ int main()
         }
 
         app.clear();
-        drawQuad(app, Color::Green, 500, 500, 200, 500, 300, 100);
+
+        // draw road
+        for (int n = 0; n < 300; n++)
+        {
+            Line &current = lines[n % N];
+            current.project(0, 1500, 0);
+
+            Line prev = lines[(n - 1) % N]; // previous line
+
+            Color grass = (n / 3) % 2 ? light_grass : dark_grass;
+            Color rumble = (n / 3) % 2 ? white_rumble : black_rumble;
+            Color road = (n / 3) % 2 ? light_road : dark_road;
+
+            drawQuad(app, grass, 0, prev.Y, screen_width, 0, current.Y, screen_width);
+            drawQuad(app, rumble, prev.X, prev.Y, prev.W * 1.2, current.X, current.Y, current.W * 1.2);
+            drawQuad(app, road, prev.X, prev.Y, prev.W, current.X, current.Y, current.W);
+        }
+
         app.display();
     }
 
