@@ -46,6 +46,17 @@ int main()
     RenderWindow app(VideoMode(screen_width, screen_height), "Outrun Racing!");
     app.setFramerateLimit(60);
 
+    // create road lines for each segment
+    vector<Line> lines;
+    for (int i = 0; i < 1600; i++)
+    {
+        Line line;
+        line.z = i * segL;
+
+        lines.push_back(line);
+    }
+    int N = lines.size();
+
     while (app.isOpen())
     {
         Event e;
