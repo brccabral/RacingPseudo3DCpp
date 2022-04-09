@@ -65,6 +65,7 @@ int main()
     }
     int N = lines.size();
     int pos = 0;
+    int playerX = 0;
 
     while (app.isOpen())
     {
@@ -74,6 +75,11 @@ int main()
             if (e.type == Event::Closed)
                 app.close();
         }
+
+        if (Keyboard::isKeyPressed(Keyboard::Right))
+            playerX += 200;
+        if (Keyboard::isKeyPressed(Keyboard::Left))
+            playerX -= 200;
 
         if (Keyboard::isKeyPressed(Keyboard::Up))
             pos += 200;
@@ -87,7 +93,7 @@ int main()
         for (int n = startPos; n < startPos + 300; n++)
         {
             Line &current = lines[n % N];
-            current.project(0, 1500, pos);
+            current.project(playerX, 1500, pos);
 
             Line prev = lines[(n - 1) % N]; // previous line
 
