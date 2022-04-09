@@ -23,9 +23,10 @@ struct Line
 {
     float x, y, z; // game position (3D space)
     float X, Y, W; // screen position (2D space)
-    float scale, curve;
+    float scale, curve, spriteX, clip;
+    Sprite sprite;
 
-    Line() { curve = x = y = z = 0; }
+    Line() { spriteX = curve = x = y = z = 0; }
 
     // from game pos to screen pos
     void project(int camX, int camY, int camZ)
@@ -34,6 +35,33 @@ struct Line
         X = (1 + scale * (x - camX)) * screen_width / 2;
         Y = (1 - scale * (y - camY)) * screen_height / 2;
         W = scale * roadW * screen_width / 2;
+    }
+
+    // draw a sprite in this Line position
+    void drawSprite(RenderWindow &app)
+    {
+        Sprite s = sprite;
+        int w = s.getTextureRect().width;
+        int h = s.getTextureRect().height;
+
+        float destX = X + scale * spriteX * screen_width / 2;
+        float destY = Y + 4;
+        float destW = w * W / 266;
+        float destH = h * W / 266;
+
+        destX += destW * spriteX; // offsetX
+        destY += destH * (-1);    // offsetY
+
+        float clipH = destY + destH - clip;
+        if (clipH < 0)
+            clipH = 0;
+
+        if (clipH >= destH)
+            return;
+        s.setTextureRect(IntRect(0, 0, w, h - h * clipH / destH));
+        s.setScale(destW / w, destH / h);
+        s.setPosition(destX, destY);
+        app.draw(s);
     }
 };
 
@@ -62,6 +90,12 @@ int main()
     sBackground.setTextureRect(IntRect(0, 0, 5000, 411));
     sBackground.setPosition(-2000, 0);
 
+    Texture t;
+    Sprite sTree;
+    t.loadFromFile("./images/5.png");
+    t.setSmooth(true);
+    sTree.setTexture(t);
+
     // create road lines for each segment
     vector<Line> lines;
     for (int i = 0; i < 1600; i++)
@@ -76,6 +110,12 @@ int main()
         // after 750 it is uphill and downhill in sin() form
         if (i > 750)
             line.y = sin(i / 30.0) * 1500;
+
+        if (i % 20 == 0)
+        {
+            line.spriteX = -2.5;
+            line.sprite = sTree;
+        }
 
         lines.push_back(line);
     }
@@ -126,6 +166,7 @@ int main()
             x += dx;
             dx += current.curve;
 
+            current.clip = maxy; // offset sprite position
             // don't draw "above ground"
             if (current.Y >= maxy)
                 continue;
@@ -141,6 +182,10 @@ int main()
             drawQuad(app, rumble, prev.X, prev.Y, prev.W * 1.2, current.X, current.Y, current.W * 1.2);
             drawQuad(app, road, prev.X, prev.Y, prev.W, current.X, current.Y, current.W);
         }
+
+        // draw objects
+        for (int n = startPos + 300; n > startPos; n--)
+            lines[n % N].drawSprite(app);
 
         app.display();
     }
