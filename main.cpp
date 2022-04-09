@@ -64,6 +64,7 @@ int main()
         lines.push_back(line);
     }
     int N = lines.size();
+    int pos = 0;
 
     while (app.isOpen())
     {
@@ -74,13 +75,19 @@ int main()
                 app.close();
         }
 
+        if (Keyboard::isKeyPressed(Keyboard::Up))
+            pos += 200;
+        if (Keyboard::isKeyPressed(Keyboard::Down))
+            pos -= 200;
+        int startPos = pos / segL;
+
         app.clear();
 
         // draw road
-        for (int n = 0; n < 300; n++)
+        for (int n = startPos; n < startPos + 300; n++)
         {
             Line &current = lines[n % N];
-            current.project(0, 1500, 0);
+            current.project(0, 1500, pos);
 
             Line prev = lines[(n - 1) % N]; // previous line
 
