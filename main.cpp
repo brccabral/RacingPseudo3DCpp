@@ -22,9 +22,9 @@ struct Line
 {
     float x, y, z; // game position (3D space)
     float X, Y, W; // screen position (2D space)
-    float scale;
+    float scale, curve;
 
-    Line() { x = y = z = 0; }
+    Line() { curve = x = y = z = 0; }
 
     // from game pos to screen pos
     void project(int camX, int camY, int camZ)
@@ -61,6 +61,8 @@ int main()
         Line line;
         line.z = i * segL;
 
+        if (i > 300 && i < 700)
+            line.curve = 0.5;
         lines.push_back(line);
     }
     int N = lines.size();
@@ -87,13 +89,17 @@ int main()
             pos -= 200;
         int startPos = pos / segL;
 
+        float x = 0, dx = 0; // curve offset on x axis
+
         app.clear();
 
         // draw road
         for (int n = startPos; n < startPos + 300; n++)
         {
             Line &current = lines[n % N];
-            current.project(playerX, 1500, pos);
+            current.project(playerX - x, 1500, pos);
+            x += dx;
+            dx += current.curve;
 
             Line prev = lines[(n - 1) % N]; // previous line
 
