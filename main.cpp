@@ -55,6 +55,13 @@ int main()
     RenderWindow app(VideoMode(screen_width, screen_height), "Outrun Racing!");
     app.setFramerateLimit(60);
 
+    Texture bg;
+    bg.loadFromFile("./images/bg.png");
+    bg.setRepeated(true);
+    Sprite sBackground(bg);
+    sBackground.setTextureRect(IntRect(0, 0, 5000, 411));
+    sBackground.setPosition(-2000, 0);
+
     // create road lines for each segment
     vector<Line> lines;
     for (int i = 0; i < 1600; i++)
@@ -101,19 +108,20 @@ int main()
         int camH = 1500 + lines[startPos].y;
         int maxy = screen_height;
 
-        //loop the circut from start to finish
+        // loop the circut from start to finish
         while (pos >= N * segL)
             pos -= N * segL;
         while (pos < 0)
             pos += N * segL;
 
         app.clear();
+        app.draw(sBackground);
 
         // draw road
         for (int n = startPos; n < startPos + 300; n++)
         {
             Line &current = lines[n % N];
-            //loop the circut from start to finish = pos - (n >= N ? N * segL : 0)
+            // loop the circut from start to finish = pos - (n >= N ? N * segL : 0)
             current.project(playerX - x, camH, pos - (n >= N ? N * segL : 0));
             x += dx;
             dx += current.curve;
