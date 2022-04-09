@@ -101,17 +101,24 @@ int main()
         int camH = 1500 + lines[startPos].y;
         int maxy = screen_height;
 
+        //loop the circut from start to finish
+        while (pos >= N * segL)
+            pos -= N * segL;
+        while (pos < 0)
+            pos += N * segL;
+
         app.clear();
 
         // draw road
         for (int n = startPos; n < startPos + 300; n++)
         {
             Line &current = lines[n % N];
-            current.project(playerX - x, camH, pos);
+            //loop the circut from start to finish = pos - (n >= N ? N * segL : 0)
+            current.project(playerX - x, camH, pos - (n >= N ? N * segL : 0));
             x += dx;
             dx += current.curve;
 
-            //don't draw "above ground"
+            // don't draw "above ground"
             if (current.Y >= maxy)
                 continue;
             maxy = current.Y;
