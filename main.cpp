@@ -192,10 +192,12 @@ int main()
 
         int startPos = pos / segL;
         int camH = 1500 + lines[startPos].y + playerY;
-        app.clear();
+
+        // clear window and fill with green
+        app.clear(Color(105, 205, 4));
         app.draw(sBackground);
 
-        //background follows the curves
+        // background follows the curves
         if (speed > 0)
             sBackground.move(-lines[startPos].curve * 2, 0);
         if (speed < 0)
