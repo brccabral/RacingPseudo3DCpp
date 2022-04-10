@@ -169,7 +169,7 @@ int main()
             speed += 200;
         if (Keyboard::isKeyPressed(Keyboard::Down))
             speed -= 200;
-        //turbo
+        // turbo
         if (Keyboard::isKeyPressed(Keyboard::Tab))
             speed *= 3;
         pos += speed;
@@ -194,6 +194,12 @@ int main()
         int camH = 1500 + lines[startPos].y + playerY;
         app.clear();
         app.draw(sBackground);
+
+        //background follows the curves
+        if (speed > 0)
+            sBackground.move(-lines[startPos].curve * 2, 0);
+        if (speed < 0)
+            sBackground.move(lines[startPos].curve * 2, 0);
 
         // draw road
         for (int n = startPos; n < startPos + 300; n++)
