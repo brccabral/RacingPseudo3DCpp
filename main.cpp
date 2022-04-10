@@ -164,13 +164,17 @@ int main()
         if (Keyboard::isKeyPressed(Keyboard::Left))
             playerX -= 200;
 
+        int speed = 0;
         if (Keyboard::isKeyPressed(Keyboard::Up))
-            pos += 200;
+            speed += 200;
         if (Keyboard::isKeyPressed(Keyboard::Down))
-            pos -= 200;
-        int startPos = pos / segL;
+            speed -= 200;
+        //turbo
+        if (Keyboard::isKeyPressed(Keyboard::Tab))
+            speed *= 3;
+        pos += speed;
 
-        //control camera height
+        // control camera height
         if (Keyboard::isKeyPressed(Keyboard::W))
             playerY += 100;
         if (Keyboard::isKeyPressed(Keyboard::S))
@@ -178,7 +182,6 @@ int main()
 
         float x = 0, dx = 0; // curve offset on x axis
 
-        int camH = 1500 + lines[startPos].y + playerY;
         int maxy = screen_height;
 
         // loop the circut from start to finish
@@ -187,6 +190,8 @@ int main()
         while (pos < 0)
             pos += N * segL;
 
+        int startPos = pos / segL;
+        int camH = 1500 + lines[startPos].y + playerY;
         app.clear();
         app.draw(sBackground);
 
