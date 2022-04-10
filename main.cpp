@@ -106,9 +106,11 @@ int main()
         Line line;
         line.z = i * segL;
 
-        // curve segment
+        // curves segment
         if (i > 300 && i < 700)
             line.curve = 0.5;
+        if (i > 1100)
+            line.curve = -0.7;
 
         // after 750 it is uphill and downhill in sin() form
         if (i > 750)
