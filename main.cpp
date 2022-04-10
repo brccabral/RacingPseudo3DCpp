@@ -148,6 +148,7 @@ int main()
     int N = lines.size();
     int pos = 0;
     int playerX = 0;
+    int playerY = 1500; // control camera height
 
     while (app.isOpen())
     {
@@ -169,9 +170,15 @@ int main()
             pos -= 200;
         int startPos = pos / segL;
 
+        //control camera height
+        if (Keyboard::isKeyPressed(Keyboard::W))
+            playerY += 100;
+        if (Keyboard::isKeyPressed(Keyboard::S))
+            playerY -= 100;
+
         float x = 0, dx = 0; // curve offset on x axis
 
-        int camH = 1500 + lines[startPos].y;
+        int camH = 1500 + lines[startPos].y + playerY;
         int maxy = screen_height;
 
         // loop the circut from start to finish
