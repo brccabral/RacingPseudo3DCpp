@@ -8,6 +8,8 @@ Tutorial from FamTrinli https://www.youtube.com/watch?v=N60lBZDEwJ8
 
 `sudo apt-get install libsfml-dev`  
 
+**It runs with SFML-2.5.x. Tested with SFML-3.x but it failed to compile.**
+
 ## Build  
 
 ```
